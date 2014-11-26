@@ -5,6 +5,7 @@ __author__ = 'Jessica'
 from socket import *
 from string import rstrip
 import os
+import datetime
 
 #Prepare a sever socket
 serverSocket = socket(AF_INET, SOCK_STREAM)
@@ -29,31 +30,40 @@ for line in user_list:
 print users
 print emails
 
-daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+#daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+nextTwoWeeks = []
 
 def checkAvailableSlots(timeSlot, file, day):
-        indexinDOW = daysOfWeek.index(day)
-        start_day = 0
-        end_day = 0
+        #indexinDOW = daysOfWeek.index(day)
+        indexinNTW = nextTwoWeeks.index(day)
+        start_line = 0
+        end_line = 0
         
+        #for num, line in enumerate(file, 1):
+        #        if day==line.rstrip():
+        #                start_day = num
+        #                break
+        #        
+        #for num, line in enumerate(file, 1):
+        #        if daysOfWeek[indexinDOW+1]==line.rstrip():
+        #                end_day = num
+        #                break
+
         for num, line in enumerate(file, 1):
                 if day==line.rstrip():
-                        start_day = num
+                        start_line = num
                         break
-                
         for num, line in enumerate(file, 1):
-                if daysOfWeek[indexinDOW+1]==line.rstrip():
-                        end_day = num
+                if nextTwoWeeks[indexinNTW+1]==line.rstrip():
+                        end_line = num
                         break
-
-        print str(start_day) + " " + str(end_day)
         
-        found = True
-        for line in file:
-                if timeSlot==line.rstrip():
-                        found = False
+        available = True
+        for x in range(start_line, end_line):
+                if timeSlot==file[x].rstrip():
+                        available=False
                         break
-        return found
+        return available
 
 while True:
 	# creates client socket in server and
@@ -97,10 +107,19 @@ while True:
                 user_file = open(fname, "a+")
         else: # if file does not exist, create new file
                 user_file = open(fname, "a+")
-                user_file.write("MONDAY\nTUESDAY\nWEDNESDAY\nTHURSDAY\nFRIDAY\nSATURDAY\nSUNDAY\n")
+                #user_file.write("MONDAY\nTUESDAY\nWEDNESDAY\nTHURSDAY\nFRIDAY\nSATURDAY\nSUNDAY\n")
+                d = datetime.date.today()
+                for x in range(0, 14):
+                        next_date = d + datetime.timedelta(x)
+                        user_file.write(str(next_date.month) + "-" + str(next_date.day) + "\n")                      
                 user_file.seek(0)
 
+        for x in range(0, 14):
+                next_date = datetime.date.today() + datetime.timedelta(x)
+                nextTwoWeeks.append(str(next_date.month) + "-" + str(next_date.day))                    
+
         file_content = user_file.readlines()
+        
         try:
 		# get menu option chosen by user
 		option = client.recv(1024).upper()
@@ -112,12 +131,28 @@ while True:
 
         # function to view all available slots for a user, given their name
         def a(file_content, day):
+                #d = datetime.date.today()
+                #print str(d.month) + "-" + str(d.day)
                 print day
+                availability = ""
                 for hour in range(0, 24):
                         timeSlot = str(hour) + ":00 - " + str(hour) + ":30"
                         available_time = checkAvailableSlots(timeSlot, file_content, day)
                         if available_time==True:
-                                print timeSlot
+                                availability = availability + timeSlot + "\n"
+
+                        if hour==23:
+                                timeSlot2 = str(hour) + ":30 - " + str(0) + ":00"
+                                available_time = checkAvailableSlots(timeSlot2, file_content, day)
+                                if available_time==True:
+                                        availability = availability + timeSlot2 + "\n"
+                        else:
+                                timeSlot2= str(hour) + ":30 - " + str(hour+1) + ":00"
+                                available_time = checkAvailableSlots(timeSlot2, file_content, day)
+                                if available_time==True:
+                                        availability = availability + timeSlot2 + "\n"
+
+                client.send(availability)
 
         def b(user_file):
                 print "You chose B"
@@ -127,12 +162,16 @@ while True:
                 
         def d(user_file):
                 print "You chose D"
-                
-        def e(user_file):
-                print "You chose E"
 
         if option=='A':
                 try:
+                        choose_date = "Please choose from one of the following dates:\n"
+                        for date in nextTwoWeeks:
+                                if date==nextTwoWeeks[13]:
+                                        choose_date += date
+                                else:
+                                        choose_date += date + ", "
+                        client.send(choose_date)
                         day = client.recv(1024).upper()
                 except:
                         #Send error message
@@ -148,7 +187,8 @@ while True:
         elif option=='D':
                 d(name)
         elif option=='E':
-                e(name)
+                client.close()
+                continue
         else:
                 print "invalid option"
                 client.close()

@@ -40,8 +40,12 @@ else:
     clientSocket.send(menu_option)
 
     if menu_option.upper()=='A':
-        day = raw_input('Enter day of the week: ')
-        clientSocket.send(day)
+        choose_date = clientSocket.recv(1024)
+        print choose_date
+        date = raw_input('Enter one of the above dates: ')
+        clientSocket.send(date)
+        availability = clientSocket.recv(1024)
+        print "\nYour available slots on " + date + " are:\n" + availability
 
 # close client socket
 clientSocket.close()
