@@ -29,7 +29,7 @@ if server_reply=="User not found.":
 else:
     print server_reply
 
-    menu = "a) view all available slots\nb) delete slots\nc) modify slots\nd) view available slots within time frame\ne) view available time slots for another user\nf) book a meeting\ne) exit"
+    menu = "a) view all available slots\nb) delete slots\nc) view available time slots for another user\nd) book a meeting\ne) book a meeting for a list of attendees\nf) exit"
 
     print menu
 
@@ -61,6 +61,15 @@ else:
             clientSocket.send(delete_slot)
             acknowledgement = clientSocket.recv(1024)
             print acknowledgement
+    elif menu_option.upper()=='C':
+        user = raw_input('Enter the name of the user: ')
+        clientSocket.send(user)
+        choose_date = clientSocket.recv(1024)
+        print choose_date
+        date = raw_input('Enter one of the above dates: ')
+        clientSocket.send(date)
+        availability = clientSocket.recv(1024)
+        print user.upper + "'s available slots on " + date + " are:\n" + availability
 
 # close client socket
 clientSocket.close()

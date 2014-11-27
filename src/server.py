@@ -107,7 +107,7 @@ while True:
         fname = name + ".txt"
 
         if os.path.isfile(fname): # if file exists, open
-                user_file = open(fname, "a+")
+                user_file = open(fname, "r")
         else: # if file does not exist, create new file
                 user_file = open(fname, "a+")
                 #user_file.write("MONDAY\nTUESDAY\nWEDNESDAY\nTHURSDAY\nFRIDAY\nSATURDAY\nSUNDAY\n")
@@ -154,11 +154,11 @@ while True:
 
                 client.send(availability)
 
-        def c(user_file):
-                print "You chose C"
-                
         def d(user_file):
                 print "You chose D"
+
+        def e(user_file):
+                print "You chose E"
 
         if option=='A':
                 try:
@@ -226,10 +226,42 @@ while True:
                         client.close()
                         continue
         elif option=='C':
-                c(name)
+                try:
+                        user = client.recv(1024).upper()
+                        # name of the user's availability file
+                        fname = user + ".txt"
+                        if os.path.isfile(fname): # if file exists, open
+                                user_file2 = open(fname, "r")
+                        else: # if file does not exist, create new file
+                                user_file2 = open(fname, "a+")
+                                d = datetime.date.today()
+                                for x in range(0, 14):
+                                        next_date = d + datetime.timedelta(x)
+                                        user_file2.write(str(next_date.month) + "-" + str(next_date.day) + "\n")                      
+                                user_file2.seek(0)
+
+                        file_content2 = user_file2.readlines()
+                        user_file2.close()
+
+                        choose_date = "Please choose from one of the following dates you would like to delete a time slot from:\n"
+                        for date in nextTwoWeeks:
+                                if date==nextTwoWeeks[13]:
+                                        choose_date += date
+                                else:
+                                        choose_date += date + ", "
+                        client.send(choose_date)
+                        day = client.recv(1024)
+                        a(file_content2, day)
+                except:
+                        #Send error message
+                        client.send('Transaction failed.')
+                        client.close()
+                        continue
         elif option=='D':
                 d(name)
         elif option=='E':
+                e(name)
+        elif option=='F':
                 client.close()
                 continue
         else:
