@@ -8,7 +8,7 @@ argv = sys.argv
 host = argv[1]
 
 # the server port is 6190
-port = 6190
+port = 6192
 
 # create client socket
 clientSocket = socket(AF_INET, SOCK_STREAM)
@@ -46,6 +46,21 @@ else:
         clientSocket.send(date)
         availability = clientSocket.recv(1024)
         print "\nYour available slots on " + date + " are:\n" + availability
+    elif menu_option.upper()=='B':
+        choose_date = clientSocket.recv(1024)
+        print choose_date
+        date = raw_input('Enter one of the above dates: ')
+        clientSocket.send(date)
+        availability = clientSocket.recv(1024)
+        
+        if availability=="All slots open":
+            print "\nAll the time slots on " + date + " are currently available."
+        else:
+            print "\nThe following time slots on " + date + " have been booked:\n" + availability
+            delete_slot = raw_input('Enter the time slot you would like to delete: ')
+            clientSocket.send(delete_slot)
+            acknowledgement = clientSocket.recv(1024)
+            print acknowledgement
 
 # close client socket
 clientSocket.close()

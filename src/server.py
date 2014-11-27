@@ -11,7 +11,7 @@ import datetime
 serverSocket = socket(AF_INET, SOCK_STREAM)
 
 #bind socket to local port number 6190
-serverSocket.bind(('', 6190))
+serverSocket.bind(('', 6192))
 
 #server listens for incoming TCP connection requests - max number of queued
 #clients - 1
@@ -32,6 +32,9 @@ print emails
 
 #daysOfWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 nextTwoWeeks = []
+for x in range(0, 14):
+        next_date = datetime.date.today() + datetime.timedelta(x)
+        nextTwoWeeks.append(str(next_date.month) + "-" + str(next_date.day))            
 
 def checkAvailableSlots(timeSlot, file, day):
         #indexinDOW = daysOfWeek.index(day)
@@ -114,11 +117,8 @@ while True:
                         user_file.write(str(next_date.month) + "-" + str(next_date.day) + "\n")                      
                 user_file.seek(0)
 
-        for x in range(0, 14):
-                next_date = datetime.date.today() + datetime.timedelta(x)
-                nextTwoWeeks.append(str(next_date.month) + "-" + str(next_date.day))                    
-
         file_content = user_file.readlines()
+        user_file.close()
         
         try:
 		# get menu option chosen by user
@@ -154,9 +154,6 @@ while True:
 
                 client.send(availability)
 
-        def b(user_file):
-                print "You chose B"
-
         def c(user_file):
                 print "You chose C"
                 
@@ -181,7 +178,53 @@ while True:
         
                 a(file_content, day)
         elif option=='B':
-                b(name)
+                try:
+                        choose_date = "Please choose from one of the following dates you would like to delete a time slot from:\n"
+                        for date in nextTwoWeeks:
+                                if date==nextTwoWeeks[13]:
+                                        choose_date += date
+                                else:
+                                        choose_date += date + ", "
+                        client.send(choose_date)
+                        day = client.recv(1024)
+                        user_file = open(fname, "w")
+                        #b(user_file, day)
+                        
+                        print day
+                        availability = ""
+                        for hour in range(0, 24):
+                                timeSlot = str(hour) + ":00 - " + str(hour) + ":30"
+                                available_time = checkAvailableSlots(timeSlot, file_content, day)
+                                if available_time==False:
+                                        availability = availability + timeSlot + "\n"
+
+                                if hour==23:
+                                        timeSlot2 = str(hour) + ":30 - " + str(0) + ":00"
+                                        available_time = checkAvailableSlots(timeSlot2, file_content, day)
+                                        if available_time==False:
+                                                availability = availability + timeSlot2 + "\n"
+                                else:
+                                        timeSlot2= str(hour) + ":30 - " + str(hour+1) + ":00"
+                                        available_time = checkAvailableSlots(timeSlot2, file_content, day)
+                                        if available_time==False:
+                                                availability = availability + timeSlot2 + "\n"
+                        if availability=="":
+                                availability = "All slots open"
+                        client.send(availability)
+
+                        delete_slot = client.recv(1024)
+                        for line in file_content:
+                                if line.rstrip()!=delete_slot.rstrip():
+                                        user_file.write(line)
+                                        
+                        user_file.close()
+                        acknowledgement = "The time slot " + delete_slot + " has been successfully deleted, and and is currently available to be booked."
+                        client.send(acknowledgement)
+                except:
+                        #Send error message
+                        client.send('Transaction failed.')
+                        client.close()
+                        continue
         elif option=='C':
                 c(name)
         elif option=='D':
@@ -195,8 +238,8 @@ while True:
                 continue
         
 	# close client connection socket
-        user_list.close()
 	client.close()
         	
 #Close client connection socket
+user_list.close()
 client.close()
