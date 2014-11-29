@@ -36,11 +36,19 @@ for x in range(0, 14):
         next_date = datetime.date.today() + datetime.timedelta(x)
         nextTwoWeeks.append(str(next_date.month) + "-" + str(next_date.day))            
 
+def find_line(file_content, line):
+        line_number = 0
+        for num, l in enumerate(file_content, 1):
+                if line==l.rstrip():
+                        line_number = num
+                        break
+        return line_number
+
 def checkAvailableSlots(timeSlot, file, day):
         #indexinDOW = daysOfWeek.index(day)
         indexinNTW = nextTwoWeeks.index(day)
-        start_line = 0
-        end_line = 0
+        start_line = find_line(file, day)
+        end_line = find_line(file, nextTwoWeeks[indexinNTW+1])
         
         #for num, line in enumerate(file, 1):
         #        if day==line.rstrip():
@@ -52,14 +60,14 @@ def checkAvailableSlots(timeSlot, file, day):
         #                end_day = num
         #                break
 
-        for num, line in enumerate(file, 1):
-                if day==line.rstrip():
-                        start_line = num
-                        break
-        for num, line in enumerate(file, 1):
-                if nextTwoWeeks[indexinNTW+1]==line.rstrip():
-                        end_line = num
-                        break
+        #for num, line in enumerate(file, 1):
+        #        if day==line.rstrip():
+        #                start_line = num
+        #                break
+        #for num, line in enumerate(file, 1):
+        #        if nextTwoWeeks[indexinNTW+1]==line.rstrip():
+        #                end_line = num
+        #                break
         
         available = True
         for x in range(start_line, end_line):
@@ -67,6 +75,12 @@ def checkAvailableSlots(timeSlot, file, day):
                         available=False
                         break
         return available
+
+def insertSlot(timeSlot, file, day):
+        #indexinDOW = daysOfWeek.index(day)
+        indexinNTW = nextTwoWeeks.index(day)
+        start_line = 0
+        end_line = 0
 
 while True:
 	# creates client socket in server and
@@ -129,7 +143,7 @@ while True:
         	client.close()
         	continue
 
-        # function to view all available slots for a user, given their name
+        # function to view all available slots for a user
         def a(file_content, day):
                 #d = datetime.date.today()
                 #print str(d.month) + "-" + str(d.day)
@@ -170,13 +184,12 @@ while True:
                                         choose_date += date + ", "
                         client.send(choose_date)
                         day = client.recv(1024).upper()
+                        a(file_content, day)
                 except:
                         #Send error message
                         client.send('Transaction failed.')
                         client.close()
                         continue
-        
-                a(file_content, day)
         elif option=='B':
                 try:
                         choose_date = "Please choose from one of the following dates you would like to delete a time slot from:\n"
@@ -258,7 +271,34 @@ while True:
                         client.close()
                         continue
         elif option=='D':
-                d(name)
+                try:
+                        choose_date = "Please choose from one of the following dates:\n"
+                        for date in nextTwoWeeks:
+                                if date==nextTwoWeeks[13]:
+                                        choose_date += date
+                                else:
+                                        choose_date += date + ", "
+                        client.send(choose_date)
+                        day = client.recv(1024).upper()
+                        a(file_content, day)
+
+                        book_slot = client.recv(1024)
+                        if checkAvailableSlots(book_slot, file_content, day)==True:
+                                index = nextTwoWeeks.index(day)
+                                insert_index = find_line(file_content, nextTwoWeeks[index])
+                                file_content.insert(insert_index, book_slot+"\n")
+                        user_file = open(fname, "w")
+                        file_content = "".join(file_content)
+                        user_file.write(file_content)
+                        user_file.close()
+                        
+                        acknowledgement = "You have successfully booked the time slot " + book_slot + " on " + day + "."
+                        client.send(acknowledgement)
+                except:
+                        #Send error message
+                        client.send('Transaction failed.')
+                        client.close()
+                        continue
         elif option=='E':
                 e(name)
         elif option=='F':

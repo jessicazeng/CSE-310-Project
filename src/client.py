@@ -39,13 +39,16 @@ else:
     # send the chosen menu option to the server
     clientSocket.send(menu_option)
 
-    if menu_option.upper()=='A':
+    def list_availability():
         choose_date = clientSocket.recv(1024)
         print choose_date
         date = raw_input('Enter one of the above dates: ')
         clientSocket.send(date)
         availability = clientSocket.recv(1024)
         print "\nYour available slots on " + date + " are:\n" + availability
+
+    if menu_option.upper()=='A':
+        list_availability()
     elif menu_option.upper()=='B':
         choose_date = clientSocket.recv(1024)
         print choose_date
@@ -70,6 +73,12 @@ else:
         clientSocket.send(date)
         availability = clientSocket.recv(1024)
         print user.upper + "'s available slots on " + date + " are:\n" + availability
+    elif menu_option.upper()=='D':
+        list_availability()
+        book_slot = raw_input('Enter one of the above time slots that you want to book: ')
+        clientSocket.send(book_slot)
+        acknowledgement = clientSocket.recv(1024)
+        print acknowledgement
 
 # close client socket
 clientSocket.close()
