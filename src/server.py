@@ -6,12 +6,13 @@ from socket import *
 from string import rstrip
 import os
 import datetime
+import re
 
 #Prepare a sever socket
 serverSocket = socket(AF_INET, SOCK_STREAM)
 
 #bind socket to local port number 6190
-serverSocket.bind(('', 6192))
+serverSocket.bind(('', 6190))
 
 #server listens for incoming TCP connection requests - max number of queued
 #clients - 1
@@ -37,7 +38,7 @@ for x in range(0, 14):
         nextTwoWeeks.append(str(next_date.month) + "-" + str(next_date.day))            
 
 def find_line(file_content, line):
-        line_number = 0
+        line_number = -1
         for num, l in enumerate(file_content, 1):
                 if line==l.rstrip():
                         line_number = num
@@ -121,7 +122,7 @@ while True:
         fname = name + ".txt"
 
         if os.path.isfile(fname): # if file exists, open
-                user_file = open(fname, "r")
+                user_file = open(fname, "a+")
         else: # if file does not exist, create new file
                 user_file = open(fname, "a+")
                 #user_file.write("MONDAY\nTUESDAY\nWEDNESDAY\nTHURSDAY\nFRIDAY\nSATURDAY\nSUNDAY\n")
@@ -130,9 +131,29 @@ while True:
                         next_date = d + datetime.timedelta(x)
                         user_file.write(str(next_date.month) + "-" + str(next_date.day) + "\n")                      
                 user_file.seek(0)
+                
+        file_content = user_file.readlines()
+
+        for y in nextTwoWeeks:
+                if find_line(file_content, y)==-1:
+                        user_file.write(y + "\n")
+
+        user_file.close()
+
+        user_file = open(fname, "r")
 
         file_content = user_file.readlines()
+        
         user_file.close()
+
+        start_index = find_line(file_content, nextTwoWeeks[0])
+
+        if start_index!=1:
+                user_file = open(fname, "w")
+                for x, line in enumerate(file_content, 1):
+                        if x not in range(0, start_index):
+                                user_file.write(line)
+                user_file.close()
         
         try:
 		# get menu option chosen by user

@@ -8,7 +8,7 @@ argv = sys.argv
 host = argv[1]
 
 # the server port is 6190
-port = 6192
+port = 6190
 
 # create client socket
 clientSocket = socket(AF_INET, SOCK_STREAM)
