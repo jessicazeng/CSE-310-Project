@@ -43,10 +43,14 @@ else:
         clientSocket.send(menu_option)
 
         def list_availability():
+            # receive and print dates for the next two weeks user can choose from
             choose_date = clientSocket.recv(1024)
             print choose_date
+
+            # take in input for one of the dates in the next two weeks and send
             date = raw_input('Enter one of the above dates: ')
             clientSocket.send(date)
+            
             availability = clientSocket.recv(1024)
             print "\nYour available slots on " + date + " are:\n" + availability
 

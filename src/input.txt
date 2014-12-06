@@ -1,4 +1,4 @@
-John johnsmith@smartnetworks.com
-Evelyn evelyn.taylor@gmail.com
-David david.miller@gmx.com
-Jessica jeszeng@cs.stonybrook.edu
+John johnsmith@smartnetworks.com jsmith123
+Evelyn evelyn.taylor@gmail.com etaylor123
+David david.miller@gmx.com dmiller123
+Jessica jeszeng@cs.stonybrook.edu jzeng123
