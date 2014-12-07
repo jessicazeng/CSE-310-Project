@@ -1,0 +1,55 @@
+User Interface Design
+The user interface of this application uses the command-line text-based interface.
+
+1.	Types of Commands
+	The commands in this application is taken in as inputs to the command line. Each input is preceded by a question or prompt for the user to respond to. The inputs are menu options, dates, time frames, names, and yes or no responses. Each command takes in only one parameter. 
+
+2. 	Formats of Commands
+	
+	2.1 Menu Options
+		Menu option inputs are one character long. Valid menu characters are not case sensitive and must be in the range a to f. 
+
+	2.2 Dates
+		Date inputs include only the month and day in the format of mm-dd. Valid dates include: '12-1', '1-2', '12-22', '3-12'. Dates that are not excepted are: '12-01', '01-20'. *
+
+	2.3 Time Frames and Time Slots
+		Time slots must be in half-hour intervals. These intervals can only be in the form (spaces and dashes must be in this format as well): 'h:00 - h:30' or 'h:30 - h:00'. The h variable, or the hour, must also be in the range 0 to 23. *
+		Examples: 	0:00 - 0:30
+					12:30 - 13:00
+					9:30 - 10:00
+					23:30 - 0:00
+
+		Time frames can be in half-hour intervals or one-hour intervals: 'h:00 - h:30' or 'h:00 - h:00' or 'h:30 - h:00'. *
+		Examples:	3:00 - 6:00
+					7:30 - 8:00
+					8:00 - 8:30
+					14:30 - 16:00
+					20:30 - 21:30
+					10:00 - 12:30
+					20:00 - 21:00
+
+	2.4 Names
+		Names are not case sensitive. The users' names are first name only.
+
+	2.5 Yes or No Responses
+		These yes or no responses are one character inputs. These responses are either 'y' for yes or 'n' for no and are not case sensitive. *
+
+	2.6 Authentication
+		Authentication when the application starts takes in email and password inputs. The email input must be in the form 'xxx@xxx.xxx'. The password can be in any form and is not case-sensitive, but must match the server's account information. *
+
+3. 	Expected output
+	
+	3.1 Menu Options
+		The output after a menu option command depends on the menu option. It is usually followed by a prompt for another input.  
+
+	3.2 Authentication
+		After authentication a valid user account, the user screen will display a menu:
+			Menu:
+			a) view all available slots
+			b) delete slots
+			c) view available time slots for another user
+			d) book a meeting
+			e) book a meeting for a list of attendees
+			f) exit
+
+* Note that the single quotes are not included in the inputs to the application. 

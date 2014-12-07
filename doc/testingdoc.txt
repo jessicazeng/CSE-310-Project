@@ -1,0 +1,325 @@
+Testing Documentation
+
+1. 	File Contents
+	
+	input.txt:	John johnsmith@smartnetworks.com jsmith123
+				Evelyn evelyn.taylor@gmail.com etaylor123
+				David david.miller@gmx.com dmiller123
+				Jessica jeszeng@cs.stonybrook.edu jzeng123
+
+2. 	Testing Input and Outputs
+	
+	User Authentication
+		Invalid user authentication information:
+			E-mail: jessicazeng@gmail.com
+			password: jzeng123
+			User not found.
+
+		Valid user authentication information:
+			E-mail: jeszeng@cs.stonybrook.edu
+			password: jzeng123
+			Hello, JESSICA
+
+			Menu:
+			a) view all available slots
+			b) delete slots
+			c) view available time slots for another user
+			d) book a meeting
+			e) book a meeting for a list of attendees
+			f) exit
+			Please select an option: 
+
+		I chose these two test cases because it shows both possible outcomes -- one for valid authentication and another for invalid authentication.
+
+	Menu Options: 
+
+	(A) View All Available Slots
+		No booked time slots:
+			Please choose from one of the following dates:
+			12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+			Enter one of the above dates: 12-11
+
+			Your available slots on 12-11 are:
+			0:00 - 0:30
+			0:30 - 1:00
+			1:00 - 1:30
+			1:30 - 2:00
+			2:00 - 2:30
+			2:30 - 3:00
+			3:00 - 3:30
+			3:30 - 4:00
+			4:00 - 4:30
+			4:30 - 5:00
+			5:00 - 5:30
+			5:30 - 6:00
+			6:00 - 6:30
+			6:30 - 7:00
+			7:00 - 7:30
+			7:30 - 8:00
+			8:00 - 8:30
+			8:30 - 9:00
+			9:00 - 9:30
+			9:30 - 10:00
+			10:00 - 10:30
+			10:30 - 11:00
+			11:00 - 11:30
+			11:30 - 12:00
+			12:00 - 12:30
+			12:30 - 13:00
+			13:00 - 13:30
+			13:30 - 14:00
+			14:00 - 14:30
+			14:30 - 15:00
+			15:00 - 15:30
+			15:30 - 16:00
+			16:00 - 16:30
+			16:30 - 17:00
+			17:00 - 17:30
+			17:30 - 18:00
+			18:00 - 18:30
+			18:30 - 19:00
+			19:00 - 19:30
+			19:30 - 20:00
+			20:00 - 20:30
+			20:30 - 21:00
+			21:00 - 21:30
+			21:30 - 22:00
+			22:00 - 22:30
+			22:30 - 23:00
+			23:00 - 23:30
+			23:30 - 0:00
+
+		Unavailable time slots: 9:00 - 9:30, 9:30 - 10:00, 14:30 - 15:00:
+			Please choose from one of the following dates:
+			12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+			Enter one of the above dates: 12-11
+
+			Your available slots on 12-11 are:
+			0:00 - 0:30
+			0:30 - 1:00
+			1:00 - 1:30
+			1:30 - 2:00
+			2:00 - 2:30
+			2:30 - 3:00
+			3:00 - 3:30
+			3:30 - 4:00
+			4:00 - 4:30
+			4:30 - 5:00
+			5:00 - 5:30
+			5:30 - 6:00
+			6:00 - 6:30
+			6:30 - 7:00
+			7:00 - 7:30
+			7:30 - 8:00
+			8:00 - 8:30
+			8:30 - 9:00
+			10:00 - 10:30
+			10:30 - 11:00
+			11:00 - 11:30
+			11:30 - 12:00
+			12:00 - 12:30
+			12:30 - 13:00
+			13:00 - 13:30
+			13:30 - 14:00
+			14:00 - 14:30
+			15:00 - 15:30
+			15:30 - 16:00
+			16:00 - 16:30
+			16:30 - 17:00
+			17:00 - 17:30
+			17:30 - 18:00
+			18:00 - 18:30
+			18:30 - 19:00
+			19:00 - 19:30
+			19:30 - 20:00
+			20:00 - 20:30
+			20:30 - 21:00
+			21:00 - 21:30
+			21:30 - 22:00
+			22:00 - 22:30
+			22:30 - 23:00
+			23:00 - 23:30
+			23:30 - 0:00
+
+		The first test case shows the output if the selected date has no meetings. The second test case shows the output that excludes booked time slots. 
+
+	(B) Delete Slots
+		Several time slots have been booked:
+		Please choose from one of the following dates:
+		12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+		Enter one of the above dates: 12-16
+
+		The following time slots on 12-16 have been booked:
+		12:00 - 12:30
+		12:30 - 13:00
+		14:00 - 14:30
+
+		Enter the time slot you would like to delete: 14:00 - 14:30
+		The time slot 14:00 - 14:30 has been successfully deleted, and and is currently available to be booked.
+
+		No time slots to delete:
+		Please choose from one of the following dates:
+		12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+		Enter one of the above dates: 12-17
+
+		All the time slots on 12-17 are currently available.
+
+		The first test case shows the output if a selected date has time slots to delete. The second test case shows a scenario where all slots are available and how the server handles it.
+
+	(C) View Available Time Slots for Another User
+		Enter the name of the user: david
+		Enter one of the following dates you would like to view the availability for:
+		12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+		Enter one of the above dates: 12-20
+		DAVID's available slots on 12-20 are:
+		0:00 - 0:30
+		0:30 - 1:00
+		1:00 - 1:30
+		1:30 - 2:00
+		2:00 - 2:30
+		2:30 - 3:00
+		3:00 - 3:30
+		3:30 - 4:00
+		4:00 - 4:30
+		4:30 - 5:00
+		5:00 - 5:30
+		5:30 - 6:00
+		6:00 - 6:30
+		6:30 - 7:00
+		7:00 - 7:30
+		7:30 - 8:00
+		8:00 - 8:30
+		8:30 - 9:00
+		9:00 - 9:30
+		9:30 - 10:00
+		10:00 - 10:30
+		10:30 - 11:00
+		11:00 - 11:30
+		11:30 - 12:00
+		12:00 - 12:30
+		12:30 - 13:00
+		13:00 - 13:30
+		13:30 - 14:00
+		14:00 - 14:30
+		14:30 - 15:00
+		15:00 - 15:30
+		15:30 - 16:00
+		16:00 - 16:30
+		16:30 - 17:00
+		17:00 - 17:30
+		17:30 - 18:00
+		18:00 - 18:30
+		18:30 - 19:00
+		19:00 - 19:30
+		19:30 - 20:00
+		20:00 - 20:30
+		20:30 - 21:00
+		21:00 - 21:30
+		21:30 - 22:00
+		22:00 - 22:30
+		22:30 - 23:00
+		23:00 - 23:30
+		23:30 - 0:00
+
+		This menu option only have one outcome that asks for the name of another user and one of the listed dates.
+
+	(D) Book a Meeting *
+		Please choose from one of the following dates:
+		12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+		Enter one of the above dates: 12-16
+
+		Your available slots on 12-16 are:
+		0:00 - 0:30
+		0:30 - 1:00
+		1:00 - 1:30
+		1:30 - 2:00
+		2:00 - 2:30
+		2:30 - 3:00
+		3:00 - 3:30
+		3:30 - 4:00
+		4:00 - 4:30
+		4:30 - 5:00
+		5:00 - 5:30
+		5:30 - 6:00
+		6:00 - 6:30
+		6:30 - 7:00
+		7:00 - 7:30
+		7:30 - 8:00
+		8:00 - 8:30
+		8:30 - 9:00
+		9:00 - 9:30
+		9:30 - 10:00
+		10:00 - 10:30
+		10:30 - 11:00
+		11:00 - 11:30
+		11:30 - 12:00
+		13:00 - 13:30
+		13:30 - 14:00
+		14:00 - 14:30
+		14:30 - 15:00
+		15:00 - 15:30
+		15:30 - 16:00
+		16:00 - 16:30
+		16:30 - 17:00
+		17:00 - 17:30
+		17:30 - 18:00
+		18:00 - 18:30
+		18:30 - 19:00
+		19:00 - 19:30
+		19:30 - 20:00
+		20:00 - 20:30
+		20:30 - 21:00
+		21:00 - 21:30
+		21:30 - 22:00
+		22:00 - 22:30
+		22:30 - 23:00
+		23:00 - 23:30
+		23:30 - 0:00
+
+		Enter one of the above time slots that you want to book: 13:00 - 13:30
+
+		You have successfully booked the time slot 13:00 - 13:30 on 12-16. You will receive an email confirmation shortly.
+
+		This example also has only one outcome where the user must input one of the listed dates and time slots to successfully book a meeting.
+
+	(E) Book a Meeting for a List of Attendees *
+		Time fram available for attendees:
+		Enter names of attendees separated by commas (e.g. Ana, Bob, Joe): david
+		Please choose from one of the following dates:
+		12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+		Please select one of the above listed dates: 12-9
+		Please enter a time frame on this date that you would like to schedule (e.g. 10:00 - 14:00): 10:00 - 13:00
+		The time slot 10:00 - 13:00 is currently available for all attendees.
+		Would you like to book this meeting for all listed attendees? (Y/N) y
+
+		You have successfully booked the time slot 10:00 - 13:00 on 12-9. All attendees will receive an email confirmation shortly.
+
+		E-mail confirmation body:
+		You have booked the time slot from 10:00 - 13:00 on 12-9. The attendees in this meeting are:
+		DAVID
+		JESSICA
+
+		Time frame not available to all attendees:
+		Enter names of attendees separated by commas (e.g. Ana, Bob, Joe): david
+		Please choose from one of the following dates:
+		12-7, 12-8, 12-9, 12-10, 12-11, 12-12, 12-13, 12-14, 12-15, 12-16, 12-17, 12-18, 12-19, 12-20
+		Please select one of the above listed dates: 12-9
+		Please enter a time frame on this date that you would like to schedule (e.g. 10:00 - 14:00): 11:30 - 12:30
+		The time slot 11:30 - 12:30 is currently unavailable for at least one of the attendees.
+
+		I chose these two test cases because it shows the two outcomes where all the attendees are available for the meeting in the specified time frame or at least one attendee is unavailable during the time frame. 
+
+	(F) Exit
+		Menu:
+		a) view all available slots
+		b) delete slots
+		c) view available time slots for another user
+		d) book a meeting
+		e) book a meeting for a list of attendees
+		f) exit
+		Please select an option: f
+		Goodbye.
+
+		There is only one outcome for the exit menu option. The server acknowledges the end of the session with a "Goodbye."
+
+* The allv linux machines only sends emails to cs.stonybrook.edu emails, so emails used in the input file MUST be cs.stonybrook.edu emails. 

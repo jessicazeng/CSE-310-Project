@@ -4,9 +4,10 @@ __author__ = 'Jessica'
 
 from socket import *
 from string import rstrip
-import os
-import datetime
-import re
+# os library used to determine if a file exists
+# datetime library used for date requests
+# re library used to match for find strings that have a pattern
+import os, datetime, re
 
 # Import smtplib for the actual sending function
 import smtplib
@@ -18,7 +19,7 @@ from email.mime.text import MIMEText
 serverSocket = socket(AF_INET, SOCK_STREAM)
 
 #bind socket to local port number 6190
-serverSocket.bind(('', 6190))
+serverSocket.bind(('', 6191))
 
 #server listens for incoming TCP connection requests - max number of queued
 #clients - 1
@@ -66,7 +67,13 @@ def checkAvailableSlots(timeSlot, file, day):
         # find what line in the file the time slots for the given date starts at
         start_line = find_line(file, day)
         # find what line in the file the time slots for the given date ends at
-        end_line = find_line(file, nextTwoWeeks[indexinNTW+1])
+        if indexinNTW==13: # if the day is the 14th day (last day)
+                # end_line is the last line number
+                for num, line in enumerate(file, 1):
+                        pass
+                end_line = num
+        else: #else, end_line is found from find_line function
+                end_line = find_line(file, nextTwoWeeks[indexinNTW+1])
 
         # available variable determines if the time slot is available
         available = True
@@ -85,31 +92,34 @@ while True:
 
 	try:
 		# get client name
-		name = client.recv(1024).upper()
+		email = client.recv(1024).lower()
+		password = client.recv(1024)
 	except:
-		#Send error message
-        	client.send('User not found.')
-        	# close client socket
+		# close client socket
         	client.close()
         	# end current session and starts new loop
         	continue
 
-        person_found = False;
+        verified = False;
 		
 	# check if name is in user_list
-	if any(name in s for s in users):
-                person_found = True;
+	if any(email in s for s in emails):
+                pass_index = emails.index(email)
+                actual_pass = passwords[pass_index]
+                if password==actual_pass:
+                        verified = True;
 
         # if person is on user list server responds to client with acknowledgement
-        if (person_found == True):
-                response = "Hello, " + name
+        if (verified == True):
+                name = users[pass_index]
+                acknowledgement = "Hello, " + name + "\n"
         else:
-                response = "User not found."
+                acknowledgement = "User not found."
 
         # send response whether the person was found or not
-        client.send(response)
+        client.send(acknowledgement)
 
-        if (person_found == False):
+        if (verified == False):
                 # close client socket
                 client.close()
                 # end current session and starts new loop
@@ -167,9 +177,7 @@ while True:
         		# get menu option chosen by user
         		option = client.recv(1024).upper()
         	except:
-        		#Send error message
-                	client.send('Transaction failed.')
-                	# close client socket
+        		# close client socket
                 	client.close()
                 	# end current session and starts new loop
                 	continue
@@ -182,6 +190,7 @@ while True:
                         for hour in range(0, 24):
                                 # first check first half hour of each hour (xx:00 - xx:30)
                                 timeSlot = str(hour) + ":00 - " + str(hour) + ":30"
+                                
                                 # use timeSlot in checkAvailableSlots to check if it is available
                                 available_time = checkAvailableSlots(timeSlot, file_content, day)
                                 #if it is, append to availability
@@ -242,7 +251,7 @@ while True:
                 if option=='A':
                         try:
                                 # create a string of date for the next two weeks for client to choose from
-                                choose_date = "Please choose from one of the following dates:\n"
+                                choose_date = ""
                                 for date in nextTwoWeeks:
                                         if date==nextTwoWeeks[13]:
                                                 choose_date += date
@@ -255,8 +264,6 @@ while True:
                                 # call function to send client their available time slots for chosen date
                                 a(file_content, day)
                         except:
-                                #Send error message
-                                client.send('Transaction failed.')
                                 # close client socket
                                 client.close()
                                 # end current session and starts new loop
@@ -264,7 +271,7 @@ while True:
                 elif option=='B': # user selected menu option B
                         try:
                                 # create a string of date for the next two weeks for client to choose from
-                                choose_date = "Please choose from one of the following dates you would like to delete a time slot from:\n"
+                                choose_date = ""
                                 for date in nextTwoWeeks:
                                         if date==nextTwoWeeks[13]:
                                                 choose_date += date
@@ -330,8 +337,6 @@ while True:
                                 file_content = user_file.readlines()
                                 user_file.close()
                         except:
-                                #Send error message
-                                client.send('Transaction failed.')
                                 # close client socket
                                 client.close()
                                 # end current session and starts new loop
@@ -343,7 +348,7 @@ while True:
                                 # name of the user's availability file
                                 fname2 = user + ".txt"
                                 if os.path.isfile(fname2): # if file exists, open
-                                        user_file2 = open(fname2, "r")
+                                        user_file2 = open(fname2, "a+")
                                 else: # if file does not exist, create new file
                                         user_file2 = open(fname2, "a+")
                                         # get today's date
@@ -355,12 +360,36 @@ while True:
                                         # set pointer to beginning of the file
                                         user_file2.seek(0)
 
-                                # store lines in the user file to file_content2 and close the file
+                                # store the lines in the file in file_content
+                                file_content2 = user_file2.readlines()
+
+                                # for files that already exists, check and append dates for the next two weeks if it isn't in there
+                                for y in nextTwoWeeks:
+                                        if find_line(file_content2, y)==-1:
+                                                user_file2.write(y + "\n")
+                                # close the file
+                                user_file2.close()
+
+                                # open and read the updated lines back into file_content and close file
+                                user_file2 = open(fname2, "r")
                                 file_content2 = user_file2.readlines()
                                 user_file2.close()
 
+                                # check if file contains past dates and time slots before today's date
+                                start_index = find_line(file_content2, nextTwoWeeks[0])
+                                # if start_index is not equal to 1, then file_contents contains past dates and/or slots
+                                if start_index!=1:
+                                        # overwrite user_file with only lines for next two weeks
+                                        user_file2 = open(fname2, "w")
+                                        for x, line in enumerate(file_content2, 1):
+                                                # skip over lines before the line for today's date
+                                                if x not in range(0, start_index):
+                                                        user_file2.write(line)
+                                        # close file
+                                        user_file2.close()
+
                                 # create string of dates for the next two weeks for client to choose from
-                                choose_date = "Enter one of the following dates you would like to view the availability for:\n"
+                                choose_date = ""
                                 for date in nextTwoWeeks:
                                         if date==nextTwoWeeks[13]:
                                                 choose_date += date
@@ -372,8 +401,6 @@ while True:
                                 # call function a to send client the availability for the selected user
                                 a(file_content2, day)
                         except:
-                                #Send error message
-                                client.send('Transaction failed.')
                                 # close client socket
                                 client.close()
                                 # end current session and starts new loop
@@ -381,8 +408,7 @@ while True:
                 elif option=='D': # user selected menu option D to book a meeting
                         try:
                                 # message stating what time slots are available
-                                choose_date = "Please choose from one of the following dates:\n"
-
+                                choose_date = ""
                                 # append dates for the next two weeks available to be chosen
                                 for date in nextTwoWeeks:
                                         if date==nextTwoWeeks[13]:
@@ -451,8 +477,6 @@ while True:
                                 file_content = user_file.readlines()
                                 user_file.close()
                         except:
-                                #Send error message
-                                client.send('Transaction failed.')
                                 # close client socket
                                 client.close()
                                 # end current session and starts new loop
